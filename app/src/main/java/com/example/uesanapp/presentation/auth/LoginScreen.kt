@@ -61,7 +61,11 @@ fun LoginScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = {},
+            onClick = {
+                if (email.isNotBlank() && password.isNotBlank()){
+                    navController.navigate("home")
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Ingresar")

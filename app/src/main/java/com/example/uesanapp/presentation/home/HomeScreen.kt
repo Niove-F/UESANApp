@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -35,7 +36,7 @@ val mockCountries = listOf(
     CountryModel("Perú", 10, "https://flagcdn.com/w320/pe.png")
 )
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen() {
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -56,11 +57,12 @@ fun HomeScreen(navController: NavController) {
                     Row(modifier = Modifier.padding(12.dp)) {
                         Image(
                             contentDescription = country.name,
-                            modifier = Modifier.size(64.dp),
+                            modifier = Modifier.size(32.dp),
                             contentScale = ContentScale.Crop,
                             painter = rememberAsyncImagePainter(country.imageUrl)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
                         Column {
                             Text(country.name, style = MaterialTheme.typography.titleMedium)
                             Text("Ranking BASUFIFA 2026: ${country.ranking}")

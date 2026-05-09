@@ -63,7 +63,9 @@ fun LoginScreen(navController: NavController) {
         Button(
             onClick = {
                 if (email.isNotBlank() && password.isNotBlank()){
-                    navController.navigate("home")
+                    if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                        navController.navigate("home")
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -72,7 +74,7 @@ fun LoginScreen(navController: NavController) {
         }
 
         Spacer(modifier = Modifier.height(15.dp))
-        Text("Olvidaste tu Contraseña?",
+        Text("No tienes cuenta? Regístrate",
             modifier = Modifier.clickable{
                 navController.navigate("register")
             }.fillMaxWidth(),

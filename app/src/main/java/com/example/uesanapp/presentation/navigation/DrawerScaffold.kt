@@ -64,6 +64,14 @@ fun DrawerScaffold(navController: NavController,
                         navController.navigate("favorites")
                     }
                 )
+                //Football
+                NavigationDrawerItem(
+                    label = { Text("Football") },
+                    selected = false,
+                    onClick = {
+                        navController.navigate("football")
+                    }
+                )
                 //Logout
                 NavigationDrawerItem(
                     label = { Text("Logout") },

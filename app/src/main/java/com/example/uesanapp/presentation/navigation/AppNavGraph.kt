@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.uesanapp.presentation.apifootball.ApiFootballScreen
 import com.example.uesanapp.presentation.auth.LoginScreen
 import com.example.uesanapp.presentation.auth.RegisterScreen
 import com.example.uesanapp.presentation.home.HomeScreen
@@ -25,6 +26,11 @@ fun AppNavGraph(){
         composable("permissions"){
             DrawerScaffold(navController) {
                 GalleryPermissionsScreen()
+            }
+        }
+        composable("football"){
+            DrawerScaffold(navController) {
+                ApiFootballScreen()
             }
         }
     }

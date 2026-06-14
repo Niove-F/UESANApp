@@ -24,11 +24,13 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import com.example.uesanapp.data.UserSession
 import com.example.uesanapp.data.remote.FirebaseAuthManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerScaffold(navController: NavController,
+                   userId: Int = UserSession.userId,
                    content: @Composable () -> Unit) {
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -45,7 +47,7 @@ fun DrawerScaffold(navController: NavController,
                     label = { Text("Home") },
                     selected = false,
                     onClick = {
-                        navController.navigate("home")
+                        navController.navigate("home/$userId")
                     }
                 )
                 //Permisions
@@ -61,7 +63,7 @@ fun DrawerScaffold(navController: NavController,
                     label = { Text("Favorites") },
                     selected = false,
                     onClick = {
-                        navController.navigate("favorites")
+                        navController.navigate("favorites/$userId")
                     }
                 )
                 //Football

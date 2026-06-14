@@ -18,16 +18,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.uesanapp.data.remote.FirebaseAuthManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.example.uesanapp.AppDatabase
+import com.example.uesanapp.data.DataBase.Usuario
+import com.example.uesanapp.data.UserSession
 
 @Composable
 fun LoginScreen(navController: NavController){
@@ -35,6 +41,11 @@ fun LoginScreen(navController: NavController){
     var password by remember {mutableStateOf("")}
 
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    //room
+    val database = remember { AppDatabase.getDatabase(context) }
+    val usuarioDAO = database.usuarioDao()
 
     Column(
         modifier = Modifier
@@ -61,6 +72,7 @@ fun LoginScreen(navController: NavController){
             onValueChange = {password = it},
             label = { Text("Contraseña")},
             placeholder = { Text("Contraseña")},
+            visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -69,16 +81,28 @@ fun LoginScreen(navController: NavController){
         Button(
             onClick = {
                 if(email.isNotBlank() && password.isNotBlank()){
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val result = FirebaseAuthManager.loginUser(email, password)
-                        if(result.isSuccess){
-                            navController.navigate("home")
-                        } else {
-                            val error = result.exceptionOrNull()?.message ?: "Error desconocido"
-                            Toast
-                                .makeText(context, error, Toast.LENGTH_LONG).show()
+                    coroutineScope.launch(Dispatchers.IO) {
+                        try {
+                            val usuario = usuarioDAO.loginUsuario(email, password)
+                            withContext(Dispatchers.Main) {
+                                if(usuario != null){
+                                    UserSession.userId = usuario.id
+                                    navController.navigate("home/${usuario.id}") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                } else {
+                                    Toast.makeText(context, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, "Error en la base de datos: ${e.message}", Toast.LENGTH_LONG).show()
+                            }
                         }
+
                     }
+                } else {
+                    Toast.makeText(context, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier.fillMaxWidth()
